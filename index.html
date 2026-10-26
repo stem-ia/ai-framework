@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Interactive model of the STEM Innovation Academy AI Policy and Framework: six pillars, clause by clause.">
+<style>*,*::before,*::after{box-sizing:border-box}:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>STEM IA AI Framework</title>
+<meta name="theme-color" content="#1b4f80">
+<meta property="og:type" content="website">
+<meta property="og:title" content="STEM IA AI Policy &amp; Framework">
+<meta property="og:description" content="The vision, mission, and six pillars that guide every AI decision at STEM Innovation Academy.">
+<meta property="og:site_name" content="STEM Innovation Academy">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 1l13 7.5v15L16 31 3 23.5v-15z' fill='%231b4f80'/%3E%3Cpath d='M16 9l6 3.5v7L16 23l-6-3.5v-7z' fill='%23f2b531'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap">
+<style>
+/* Layout: model on the left, one reading panel on the right that switches between the pillar overview and a single pillar's clauses. Stacks on narrow screens. */
+:root{
+  --bg:#eef2f6; --stage:#e4ebf3; --fg:#13263a; --muted:#566a7f; --soft:#7a8b9d; --line:#d3dde8;
+  --panel:#ffffff; --hover:#f3f6fa; --blue:#4596d6; --blue-ink:#1b5a93; --gold:#f2b531; --gold-ink:#94660a;
+  --on-seg:#0e2a46;
+  --display:"Barlow Condensed","Arial Narrow",sans-serif;
+  --body:"Barlow","Segoe UI",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0c1723; --stage:#101e2e; --fg:#e7eef6; --muted:#a3b4c6; --soft:#7f93a8; --line:#22364b;
+  --panel:#142436; --hover:#1a2d42; --blue:#4d9ae0; --blue-ink:#8cc1f0; --gold:#f2b531; --gold-ink:#f5c766; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0c1723; --stage:#101e2e; --fg:#e7eef6; --muted:#a3b4c6; --soft:#7f93a8; --line:#22364b;
+  --panel:#142436; --hover:#1a2d42; --blue:#4d9ae0; --blue-ink:#8cc1f0; --gold:#f2b531; --gold-ink:#f5c766; color-scheme:dark}
+
+html,body{background:var(--bg);color:var(--fg)}
+body{font-family:var(--body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 48px}
+.wrap{max-width:1240px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+
+header{display:flex;flex-direction:column;gap:6px}
+.eyebrow{font-family:var(--display);font-weight:600;letter-spacing:.16em;text-transform:uppercase;font-size:13px;color:var(--blue-ink)}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(32px,4.6vw,48px);line-height:1;margin:0;text-wrap:balance}
+.lede{margin:4px 0 0;color:var(--muted);font-size:17px;max-width:62ch}
+
+.main{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:20px;align-items:stretch}
+.stage{position:relative;min-width:0;height:620px;border-radius:16px;overflow:hidden;touch-action:none;
+  background:radial-gradient(110% 85% at 50% 45%,var(--bg) 25%,var(--stage) 100%);border:1px solid var(--line)}
+#gl{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:grab}
+#gl.drag{cursor:grabbing}
+#labels{position:absolute;inset:0;pointer-events:none}
+.lbl{position:absolute;left:0;top:0;font-family:var(--display);font-weight:600;color:var(--on-seg);text-align:center;
+  line-height:1.02;font-size:var(--ls,18px);white-space:nowrap;transition:opacity .25s}
+.lbl .num{display:block;font-weight:700;font-size:.62em;letter-spacing:.14em;opacity:.65;margin-bottom:.15em}
+.lbl.hub{font-weight:700}
+.lbl.hub .num{opacity:.6}
+.tip{position:absolute;left:14px;bottom:10px;right:14px;font-size:13px;color:var(--soft);display:flex;gap:16px;flex-wrap:wrap;pointer-events:none}
+.tip kbd{font:600 12px var(--body);border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:0 5px;color:var(--muted);background:var(--panel)}
+
+.panel{min-width:0;height:620px;display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.scroll{flex:1;overflow:auto;padding:22px 24px 24px;overscroll-behavior:contain}
+.kicker{font-family:var(--display);font-weight:600;letter-spacing:.14em;text-transform:uppercase;font-size:12.5px;color:var(--soft)}
+.panel h2{font-family:var(--display);font-weight:700;font-size:30px;line-height:1.02;margin:4px 0 0;text-wrap:balance}
+.panel .sum{margin:8px 0 0;font-size:16.5px;color:var(--muted);max-width:46ch}
+
+/* overview list */
+.plist{list-style:none;margin:18px 0 0;padding:0;display:flex;flex-direction:column;border-top:1px solid var(--line)}
+.plist button{all:unset;box-sizing:border-box;width:100%;cursor:pointer;display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:14px;align-items:center;
+  padding:13px 8px;border-bottom:1px solid var(--line);border-radius:0}
+.plist button:hover,.plist button.hot{background:var(--hover)}
+.plist button:focus-visible{outline:2px solid var(--blue-ink);outline-offset:-2px}
+.sw{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;color:#0e2a46}
+.sw svg{width:24px;height:24px}
+.plist .t{font-family:var(--display);font-weight:600;font-size:19px;line-height:1.1}
+.plist .s{font-size:14px;color:var(--muted);line-height:1.35;margin-top:2px}
+.plist .c{font-family:var(--display);font-size:13px;letter-spacing:.06em;color:var(--soft);font-variant-numeric:tabular-nums;white-space:nowrap}
+
+/* detail */
+.dhead{display:flex;gap:14px;align-items:flex-start}
+.dhead .sw{width:52px;height:52px;border-radius:12px;flex:none}
+.dhead .sw svg{width:30px;height:30px}
+.clauses{list-style:none;margin:20px 0 0;padding:0;display:flex;flex-direction:column;border-top:1px solid var(--line)}
+.clauses li{display:grid;grid-template-columns:44px minmax(0,1fr);gap:4px 10px;padding:14px 0;border-bottom:1px solid var(--line)}
+.clauses .cn{font-family:var(--display);font-weight:700;font-size:17px;font-variant-numeric:tabular-nums;line-height:1.3}
+.clauses h3{margin:0;font-family:var(--display);font-weight:600;font-size:19px;line-height:1.25}
+.clauses p{grid-column:2;margin:0;font-size:15.5px;line-height:1.55;color:var(--muted);max-width:58ch}
+
+.bar{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 14px;border-top:1px solid var(--line);background:var(--panel)}
+.bar button{font:600 15px/1 var(--display);letter-spacing:.03em;color:var(--fg);background:transparent;border:1px solid var(--line);
+  border-radius:8px;padding:9px 12px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.bar button:hover{background:var(--hover)}
+.bar button:focus-visible{outline:2px solid var(--blue-ink);outline-offset:2px}
+.bar .step{display:flex;gap:6px}
+.bar[hidden]{display:none!important}
+
+/* vision + mission, top of page */
+.vm{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.vm article{min-width:0;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px 22px;border-top:4px solid var(--gold)}
+.vm article.mission{border-top-color:var(--blue)}
+.vm h2{font-family:var(--display);font-weight:600;letter-spacing:.14em;text-transform:uppercase;font-size:13px;color:var(--soft);margin:0 0 8px}
+.vm p{margin:0;font-size:17px;line-height:1.55;max-width:62ch}
+.sechead{display:flex;flex-direction:column;gap:4px;padding-top:8px}
+.sechead h2{font-family:var(--display);font-weight:700;font-size:clamp(26px,3.4vw,34px);line-height:1.05;margin:0}
+.sechead p{margin:0;color:var(--muted);max-width:70ch}
+footer{color:var(--soft);font-size:13.5px;border-top:1px solid var(--line);padding-top:14px}
+.nogl .stage{display:none}
+.nogl .main{grid-template-columns:1fr}
+.nogl .panel{height:auto}
+.nogl .scroll{overflow:visible}
+
+@media (max-width:920px){
+  .main{grid-template-columns:1fr}
+  .stage{height:auto;aspect-ratio:1/.88;max-height:70vh;min-height:300px}
+  .panel{height:auto}
+  .scroll{overflow:visible}
+  .vm{grid-template-columns:1fr}
+  .tip .desk{display:none}
+}
+@media (hover:none){.tip .desk{display:none}}
+@media (prefers-reduced-motion:reduce){.lbl{transition:none}}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">STEM Innovation Academy</div>
+    <h1>AI Policy &amp; Framework</h1>
+  </header>
+
+  <section class="vm" aria-label="Vision and mission">
+    <article class="vision"><h2>Vision</h2><p>In a future where data aggregation, content generation, automation, and technical execution are abundant, STEM Innovation Academy empowers students to leverage technology as a foundation to master problem framing, ethical judgment, human leadership, and informed decision-making, ensuring they remain thoughtful, responsible, and trusted creators in a rapidly evolving world.</p></article>
+    <article class="mission"><h2>Mission</h2><p>Our mission is to empower students to become thoughtful, responsible creators who can frame meaningful problems and act with integrity in an AI-rich world. AI is used to support exploration and learning, while human judgment, intellectual agency, and accountability are intentionally preserved.</p></article>
+  </section>
+
+  <div class="sechead">
+    <h2>The Six Pillars</h2>
+    <p>Six areas that guide every AI decision at STEM IA. Staff consider all six together when designing, using, or reviewing AI-supported practice.</p>
+  </div>
+
+  <main class="main">
+    <div class="stage" id="stage">
+      <canvas id="gl" aria-hidden="true"></canvas>
+      <div id="labels" aria-hidden="true"></div>
+      <div class="tip"><span class="desk">Hover to preview</span><span>Click or tap to open</span><span>Drag to turn</span><span class="desk"><kbd>←</kbd> <kbd>→</kbd> step through</span></div>
+    </div>
+    <section class="panel" aria-live="polite">
+      <div class="scroll" id="scroll"></div>
+      <div class="bar" id="bar" hidden>
+        <button type="button" id="back">All pillars</button>
+        <div class="step"><button type="button" id="prev" aria-label="Previous pillar">← Prev</button><button type="button" id="next" aria-label="Next pillar">Next →</button></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>STEM Innovation Academy · Calgary, Alberta</footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+const ICON = {
+  shield:'<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3l9 3.5v7c0 6-4 10-9 12-5-2-9-6-9-12v-7z"/><path d="M11.5 15l3.2 3.2 6-6.2"/></svg>',
+  person:'<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="16" cy="10" r="5"/><path d="M6 28c0-6 4.5-10 10-10s10 4 10 10"/></svg>',
+  book:'<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M16 9c-3-2.5-7-3-11-2.5v17c4-.5 8 0 11 2.5 3-2.5 7-3 11-2.5v-17C23 6 19 6.5 16 9z"/><path d="M16 9v17"/></svg>',
+  scales:'<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4v23M9 27h14M6 8h20"/><path d="M6 8l-4 9h8zM26 8l-4 9h8z"/></svg>',
+  network:'<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="16" cy="16" r="5"/><circle cx="16" cy="4" r="2"/><circle cx="16" cy="28" r="2"/><circle cx="4" cy="16" r="2"/><circle cx="28" cy="16" r="2"/><path d="M16 6v5M16 21v5M6 16h5M21 16h5"/></svg>',
+  gear:'<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="16" cy="16" r="4"/><path d="M16 7v3M16 22v3M7 16h3M22 16h3M9.6 9.6l2.1 2.1M20.3 20.3l2.1 2.1M9.6 22.4l2.1-2.1M20.3 11.7l2.1-2.1"/><path d="M3.5 12A13 13 0 0 1 24 5M28.5 20A13 13 0 0 1 8 27"/></svg>'
+};
+
+// Edge index k runs counter-clockwise from the right-hand vertical side of a pointy-top hexagon.
+const PILLARS = [
+ {n:2,edge:0,tone:'gold',icon:'book',name:'Design for Learning',sum:'AI strengthens student thinking instead of replacing it.',lines:['Design for','Learning'],clauses:[
+  ['2.1','Supportive Role of AI','AI is used to enhance instruction and empower student learning. Teachers remain the experts in the classroom; students actively engage rather than delegating thinking to AI.'],
+  ['2.2','Critical & Creative Thinking','AI use must strengthen students’ ability to think, create, and problem-solve. Students should be encouraged to iterate, critique, and extend AI outputs.'],
+  ['2.3','Clear Learning Design','Assignments clearly outline when and how AI may be used. Students are expected to demonstrate prompt transparency or reflective documentation of their process.'],
+  ['2.4','Academic Integrity & Attribution','Students and staff use AI ethically. Any AI contribution must be acknowledged or cited according to school guidelines. Further detail is in the STEM IA academic integrity policy.'],
+  ['2.5','AI Literacy','Teachers and students learn how AI tools work, including their strengths, limitations, and biases, enabling informed and responsible use.']]},
+ {n:1,edge:1,tone:'gold',icon:'person',name:'Human-Centered Approach',sum:'AI deepens learning while teachers and students stay in charge.',lines:['Human-Centered','Approach'],clauses:[
+  ['1.1','Purpose Before Efficiency','AI is adopted to deepen student learning, thinking, and creativity. It is not intended to speed up tasks or replace teacher work.'],
+  ['1.2','Pedagogical Justification','Use of AI must be grounded in sound pedagogy and aligned with curricular goals, not novelty or convenience.'],
+  ['1.3','AI as a Scaffold','AI supports, not replaces, critical learning processes. Students may use AI for brainstorming, revision feedback, modeling thinking processes, or exploring ideas, while maintaining ownership of their work.'],
+  ['1.4','Human Oversight & Agency','Teachers remain the primary decision-makers, and students retain intellectual agency. All AI-generated outputs used for learning are reviewed, curated, or approved by educators using their professional judgement.'],
+  ['1.5','Wellbeing & Balance','AI use must promote wellbeing and avoid over-reliance, fatigue, or harm. AI should reduce unnecessary cognitive load while preserving space for human relationships, creativity, and inquiry.']]},
+ {n:6,edge:2,tone:'blue',icon:'shield',name:'Ethical Use & Safeguards',sum:'Privacy, security, copyright, and fairness come first.',lines:['Ethical Use','& Safeguards'],clauses:[
+  ['6.1','Privacy & Data Protection','All AI use complies with Canadian and Albertan privacy law. The collection, retention, or sharing of unnecessary personal data is prohibited. Student data is never sold.'],
+  ['6.2','Data Transparency & Consent','Families and stakeholders are informed about what data AI systems collect and how it is used. Parental consent is obtained if required.'],
+  ['6.3','Protection of User Inputs','Sensitive, personal, or identifiable information relating to students, staff, or the organization must not be entered into public AI tools.'],
+  ['6.4','Cybersecurity & Infrastructure Resilience','Robust security measures protect school systems, networks, and AI tools from misuse, breach, or manipulation.'],
+  ['6.5','Copyright & IP Compliance','All AI-supported work must respect copyright law and attribute original creators where required.'],
+  ['6.6','Fairness & Bias Awareness','AI’s tendency to replicate or amplify bias is acknowledged. Staff and students are to evaluate outputs.']]},
+ {n:5,edge:3,tone:'blue',icon:'gear',name:'Future Readiness',sum:'Students and staff build the AI skills the future will ask for.',lines:['Future','Readiness'],clauses:[
+  ['5.1','Skills for Emerging Futures','Students and educators develop AI competencies relevant to future academic, industry, and workplace expectations.'],
+  ['5.2','Awareness of Impacts & Implications','Stakeholders develop an understanding of the opportunities, limitations, ethical considerations, and societal effects of AI.'],
+  ['5.3','Continuous Learning & Adaptation','AI practices evolve through ongoing review, experimentation, reflection, and updates as the technological and educational landscapes shift.']]},
+ {n:4,edge:4,tone:'blue',icon:'network',name:'Transparency & Explainability',sum:'Everyone knows when, how, and why AI is used.',lines:['Transparency','& Explainability'],clauses:[
+  ['4.1','Clear Communication with Stakeholders','Teachers, students, and families receive understandable information about how AI is used in learning environments.'],
+  ['4.2','Explainability & Documentation','The school maintains clear documentation describing how AI tools function, their limitations, potential biases, and expected use cases.'],
+  ['4.3','Disclosure of AI Use','When AI meaningfully contributes to a product, assignment, or school process, the use should be disclosed in plain, accessible language (e.g., “AI-assisted draft”).']]},
+ {n:3,edge:5,tone:'gold',icon:'scales',name:'Equity & Access',sum:'AI removes barriers to learning and never adds new ones.',lines:['Equity','& Access'],clauses:[
+  ['3.1','Inclusive Access & Opportunity','AI tools support learners of all backgrounds and abilities. Accessibility features (translation, read-aloud, captioning, language simplification, multimodal assistance) are incorporated where desirable and helpful. Accommodations will be made to students as appropriate.'],
+  ['3.2','Cultural & Intellectual Property Respect','AI use respects cultural rights, Indigenous knowledge, and intellectual property norms, including those of FNMI communities.'],
+  ['3.3','No New Barriers','AI must reduce educational inequities. Alternatives must be available for students who cannot or choose not to use AI tools.']]}
+];
+
+const ORDER = [...PILLARS].sort((a,b)=>a.n-b.n);
+const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+const swBg = p => p.tone==='gold' ? 'var(--gold)' : 'var(--blue)';
+
+// ---------- panel ----------
+const scrollEl = document.getElementById('scroll'), bar = document.getElementById('bar');
+let preview=null, open=null;   // preview = hover, open = selected
+
+function overviewHTML(){
+  return `<div class="kicker">Overview</div><h2>Six pillars, one framework</h2>
+  <p class="sum">Choose a pillar on the model or below to read its clauses.</p>
+  <ul class="plist">${ORDER.map(p=>`<li><button type="button" data-n="${p.n}" class="${preview===p?'hot':''}">
+    <span class="sw" style="background:${swBg(p)}">${ICON[p.icon]}</span>
+    <span><span class="t">${p.n}. ${esc(p.name)}</span><span class="s" style="display:block">${esc(p.sum)}</span></span>
+    <span class="c">${p.clauses.length} clauses</span></button></li>`).join('')}</ul>`;
+}
+function detailHTML(p){
+  return `<div class="dhead"><span class="sw" style="background:${swBg(p)}">${ICON[p.icon]}</span>
+    <div><div class="kicker">Pillar ${p.n} of 6</div><h2>${esc(p.name)}</h2></div></div>
+    <p class="sum">${esc(p.sum)}</p>
+    <ol class="clauses">${p.clauses.map(c=>`<li><span class="cn" style="color:${p.tone==='gold'?'var(--gold-ink)':'var(--blue-ink)'}">${c[0]}</span><h3>${esc(c[1])}</h3><p>${esc(c[2])}</p></li>`).join('')}</ol>`;
+}
+let shown = undefined;
+function render(){
+  const p = open || preview;
+  const key = p ? p.n+(open?'o':'p') : 'ov'+(preview?preview.n:'');
+  if(key===shown) return; shown = key;
+  if(p && (open || window.matchMedia('(hover:hover)').matches)){ scrollEl.innerHTML = detailHTML(p); }
+  else scrollEl.innerHTML = overviewHTML();
+  bar.hidden = !open;
+  if(open) scrollEl.scrollTop = 0;
+  scrollEl.querySelectorAll('.plist button').forEach(b=>{
+    const q = PILLARS.find(x=>x.n==b.dataset.n);
+    b.addEventListener('click',()=>select(q));
+    b.addEventListener('mouseenter',()=>{ if(!open){ hoverRow=q; } });
+    b.addEventListener('mouseleave',()=>{ hoverRow=null; });
+  });
+}
+let hoverRow=null;
+function select(p){
+  open = p; preview = null; shown=undefined; render();
+  // shareable deep link, e.g. .../#pillar-3 (replaceState keeps the back button clean)
+  try{ history.replaceState(null,'',p?'#pillar-'+p.n:location.pathname+location.search); }catch(e){}
+}
+function step(d){ const i = ORDER.indexOf(open||ORDER[0]); select(ORDER[(i+d+6)%6]); }
+document.getElementById('back').onclick=()=>select(null);
+document.getElementById('prev').onclick=()=>step(-1);
+document.getElementById('next').onclick=()=>step(1);
+document.addEventListener('keydown',e=>{
+  if(e.target.closest && e.target.closest('input,textarea')) return;
+  if(e.key==='Escape'){ select(null); }
+  if(e.key==='ArrowRight'){ open?step(1):select(ORDER[0]); }
+  if(e.key==='ArrowLeft'){ open?step(-1):select(ORDER[5]); }
+});
+render();
+const fromHash = () => { const m=/^#pillar-([1-6])$/.exec(location.hash); return m ? PILLARS.find(x=>x.n==m[1]) : null; };
+if(fromHash()) select(fromHash());
+window.addEventListener('hashchange',()=>select(fromHash()));
+const narrow = matchMedia('(max-width:920px)');
+const panelEl = document.querySelector('.panel');
+
+// ---------- three.js scene (falls back to the reading panel alone if WebGL or the CDN is unavailable) ----------
+function initScene(){
+const stage = document.getElementById('stage'), canvas = document.getElementById('gl'), labelsEl = document.getElementById('labels');
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.outputEncoding = THREE.sRGBEncoding;
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(32,1,0.1,100);
+scene.add(new THREE.HemisphereLight(0xffffff,0x2a3c55,0.75));
+const keyL = new THREE.DirectionalLight(0xffffff,0.95); keyL.position.set(-4,6,9); scene.add(keyL);
+const rimL = new THREE.DirectionalLight(0xcfe2ff,0.4); rimL.position.set(6,-4,3); scene.add(rimL);
+
+const root = new THREE.Group(); scene.add(root);
+const R = 4.0, r = 1.95, H = 0.55;
+const ang = k => -Math.PI/6 + k*Math.PI/3;
+const vert = (k,rad) => new THREE.Vector2(Math.cos(ang(k))*rad, Math.sin(ang(k))*rad);
+const lin = hex => new THREE.Color(hex).convertSRGBToLinear();
+const hexShape = rad => { const s=new THREE.Shape(); for(let k=0;k<6;k++){const v=vert(k,rad); k?s.lineTo(v.x,v.y):s.moveTo(v.x,v.y);} s.closePath(); return s; };
+
+const plate = new THREE.Mesh(new THREE.ExtrudeGeometry(hexShape(R+0.28),{depth:0.35,bevelEnabled:true,bevelThickness:0.06,bevelSize:0.06,bevelSegments:2}),
+  new THREE.MeshStandardMaterial({color:lin(0x1b4f80),roughness:0.45,metalness:0.15}));
+plate.position.z=-0.38; root.add(plate);
+const hub = new THREE.Mesh(new THREE.ExtrudeGeometry(hexShape(r-0.18),{depth:H+0.12,bevelEnabled:true,bevelThickness:0.05,bevelSize:0.05,bevelSegments:2}),
+  new THREE.MeshStandardMaterial({color:lin(0xfbfdff),roughness:0.35}));
+root.add(hub);
+
+const COL = {gold:0xf2b531, blue:0x4a98d8}, GREY = lin(0xaab6c3);
+const segs=[];
+PILLARS.forEach(p=>{
+  const k=p.edge, a=vert(k,R), b=vert(k+1,R), c=vert(k+1,r), d=vert(k,r);
+  const cx=(a.x+b.x+c.x+d.x)/4, cy=(a.y+b.y+c.y+d.y)/4, s=0.93;
+  const sh=new THREE.Shape(); [a,b,c,d].forEach((v,i)=>{const x=cx+(v.x-cx)*s,y=cy+(v.y-cy)*s; i?sh.lineTo(x,y):sh.moveTo(x,y);}); sh.closePath();
+  p.base = lin(COL[p.tone]);
+  const mat=new THREE.MeshPhysicalMaterial({color:p.base.clone(),roughness:0.32,metalness:0.05,clearcoat:0.6,clearcoatRoughness:0.25,emissive:p.base.clone(),emissiveIntensity:0});
+  const m=new THREE.Mesh(new THREE.ExtrudeGeometry(sh,{depth:H,bevelEnabled:true,bevelThickness:0.08,bevelSize:0.07,bevelSegments:3}),mat);
+  m.userData.p=p; root.add(m); segs.push(m);
+  const mid=k*Math.PI/3; p.normal=new THREE.Vector2(Math.cos(mid),Math.sin(mid));
+  p.center=new THREE.Vector3(cx,cy,H+0.1); p.mesh=m; p.lift=0; p.dim=0;
+  const el=document.createElement('div'); el.className='lbl';
+  el.innerHTML=`<span class="num">PILLAR ${p.n}</span>${p.lines.join('<br>')}`; labelsEl.appendChild(el); p.el=el;
+});
+const hubLbl=document.createElement('div'); hubLbl.className='lbl hub'; hubLbl.innerHTML='<span class="num">STEM IA</span>AI Policy<br>&amp; Framework'; labelsEl.appendChild(hubLbl);
+
+// ---------- pointer ----------
+const ray=new THREE.Raycaster(), mouse=new THREE.Vector2();
+let rotX=-0.42,rotY=0,tRotX=-0.42,tRotY=0,dragging=false,downPos=null,lastPos=null,lastInput=0;
+const t0=performance.now();
+function pick(e){
+  const rc=canvas.getBoundingClientRect();
+  mouse.set(((e.clientX-rc.left)/rc.width)*2-1,-((e.clientY-rc.top)/rc.height)*2+1);
+  ray.setFromCamera(mouse,camera); const h=ray.intersectObjects(segs)[0]; return h?h.object.userData.p:null;
+}
+canvas.addEventListener('pointerdown',e=>{downPos=lastPos={x:e.clientX,y:e.clientY};dragging=false;canvas.setPointerCapture(e.pointerId);lastInput=performance.now();});
+canvas.addEventListener('pointermove',e=>{
+  lastInput=performance.now();
+  if(downPos){
+    const dx=e.clientX-lastPos.x, dy=e.clientY-lastPos.y; lastPos={x:e.clientX,y:e.clientY};
+    if(Math.hypot(e.clientX-downPos.x,e.clientY-downPos.y)>5){dragging=true;canvas.classList.add('drag');}
+    if(dragging){tRotY=Math.max(-0.9,Math.min(0.9,tRotY+dx*0.006));tRotX=Math.max(-1.1,Math.min(0.1,tRotX+dy*0.006));return;}
+  }
+  if(e.pointerType==='mouse'){ const p=pick(e); canvas.style.cursor=p?'pointer':''; if(preview!==p){preview=p; render();} }
+});
+canvas.addEventListener('pointerup',e=>{
+  canvas.classList.remove('drag');
+  if(!dragging){
+    const p=pick(e);
+    if(p){ select(open===p?null:p); if(open && narrow.matches) panelEl.scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'}); }
+    else if(open) select(null);
+  }
+  downPos=null; dragging=false;
+});
+canvas.addEventListener('pointerleave',()=>{ if(!downPos && preview){preview=null; render();} });
+
+// ---------- layout + loop ----------
+let W=1,Hh=1;
+function resize(){
+  W=stage.clientWidth; Hh=stage.clientHeight; renderer.setSize(W,Hh,false); camera.aspect=W/Hh;
+  const need=2*(R+0.55), vf=camera.fov*Math.PI/180;
+  const dist=Math.max(need/2/Math.tan(vf/2), (need/camera.aspect)/2/Math.tan(vf/2));
+  camera.position.set(0,0,dist*1.13); camera.updateProjectionMatrix();
+}
+new ResizeObserver(resize).observe(stage); resize();
+const tmp=new THREE.Vector3();
+function toScreen(v){ tmp.copy(v).applyMatrix4(root.matrixWorld).project(camera); return {x:(tmp.x+1)/2*W,y:(1-tmp.y)/2*Hh}; }
+const place=(el,s,sc)=>{ el.style.transform=`translate(${s.x}px,${s.y}px) translate(-50%,-50%) scale(${sc})`; };
+
+function frame(now){
+  const t=(now-t0)/1000, focus=open||preview||hoverRow;
+  const idle=!reduce&&!dragging&&now-lastInput>2500&&!focus;
+  rotX+=(tRotX+(idle?Math.sin(t*0.27)*0.05:0)-rotX)*0.08;
+  rotY+=(tRotY+(idle?Math.sin(t*0.35)*0.18:0)-rotY)*0.08;
+  root.rotation.set(rotX,rotY,0); root.updateMatrixWorld();
+
+  // label size follows the model's on-screen size
+  const a=toScreen(new THREE.Vector3(-R,0,H)), b=toScreen(new THREE.Vector3(R,0,H));
+  const px=Math.hypot(b.x-a.x,b.y-a.y); stage.style.setProperty('--ls',Math.max(11,Math.min(21,px*0.04))+'px');
+
+  const k=reduce?1:0.15;
+  PILLARS.forEach(p=>{
+    p.lift+=((p===focus?1:0)-p.lift)*k;
+    p.dim+=((focus&&p!==focus?1:0)-p.dim)*k;
+    p.mesh.position.set(p.normal.x*0.3*p.lift,p.normal.y*0.3*p.lift,0.55*p.lift);
+    p.mesh.material.color.copy(p.base).lerp(GREY,0.55*p.dim);
+    p.mesh.material.emissiveIntensity=0.16*p.lift;
+    place(p.el,toScreen(p.center.clone().add(p.mesh.position)),1+0.08*p.lift);
+    p.el.style.opacity=String(1-0.45*p.dim);
+  });
+  place(hubLbl,toScreen(new THREE.Vector3(0,0,H+0.2)),1);
+  renderer.render(scene,camera);
+  raf = onscreen ? requestAnimationFrame(frame) : 0;
+}
+// stop drawing while the model is scrolled out of view (saves battery on phones and Chromebooks)
+let raf=0, onscreen=true;
+new IntersectionObserver(([en])=>{ onscreen=en.isIntersecting; if(onscreen && !raf) raf=requestAnimationFrame(frame); }).observe(stage);
+raf=requestAnimationFrame(frame);
+}
+try{ if(!window.THREE) throw new Error('three.js did not load'); initScene(); }
+catch(err){ document.body.classList.add('nogl'); }
+</script>
+
+</body>
+</html>
