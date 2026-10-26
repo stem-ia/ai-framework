@@ -225,13 +225,14 @@ function detailHTML(p){
 }
 let shown = undefined;
 function render(){
-  const p = open || preview;
-  const key = p ? p.n+(open?'o':'p') : 'ov'+(preview?preview.n:'');
+  // hover preview wins over the clicked (pinned) pillar; moving off the model returns to the pinned one
+  const canHover = window.matchMedia('(hover:hover)').matches;
+  const p = (preview && canHover) ? preview : open;
+  const key = p ? p.n+(p===open?'o':'p') : 'ov'+(preview?preview.n:'');
   if(key===shown) return; shown = key;
-  if(p && (open || window.matchMedia('(hover:hover)').matches)){ scrollEl.innerHTML = detailHTML(p); }
-  else scrollEl.innerHTML = overviewHTML();
+  if(p){ scrollEl.innerHTML = detailHTML(p); scrollEl.scrollTop = 0; }
+  else { scrollEl.innerHTML = overviewHTML(); hoverRow = null; }
   bar.hidden = !open;
-  if(open) scrollEl.scrollTop = 0;
   scrollEl.querySelectorAll('.plist button').forEach(b=>{
     const q = PILLARS.find(x=>x.n==b.dataset.n);
     b.addEventListener('click',()=>select(q));
@@ -241,7 +242,8 @@ function render(){
 }
 let hoverRow=null;
 function select(p){
-  open = p; preview = null; shown=undefined; render();
+  // clear any hover left behind by a list row that was replaced before its mouseleave could fire
+  open = p; preview = null; hoverRow = null; shown=undefined; render();
   // shareable deep link, e.g. .../#pillar-3 (replaceState keeps the back button clean)
   try{ history.replaceState(null,'',p?'#pillar-'+p.n:location.pathname+location.search); }catch(e){}
 }
@@ -266,6 +268,7 @@ const panelEl = document.querySelector('.panel');
 function initScene(){
 const stage = document.getElementById('stage'), canvas = document.getElementById('gl'), labelsEl = document.getElementById('labels');
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const canHoverModel = matchMedia('(hover:hover)').matches;
 const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
 renderer.setPixelRatio(Math.min(devicePixelRatio,2));
 renderer.outputEncoding = THREE.sRGBEncoding;
@@ -333,8 +336,14 @@ canvas.addEventListener('pointerup',e=>{
     else if(open) select(null);
   }
   downPos=null; dragging=false;
+  // a drag that ends off the model never gets a pointerleave, so re-check what is actually under the mouse
+  if(e.pointerType==='mouse'){ const rc=canvas.getBoundingClientRect(), inside=e.clientX>=rc.left&&e.clientX<=rc.right&&e.clientY>=rc.top&&e.clientY<=rc.bottom;
+    const h=inside?pick(e):null; if(preview!==h){ preview=h; render(); } }
 });
-canvas.addEventListener('pointerleave',()=>{ if(!downPos && preview){preview=null; render();} });
+const clearHover=()=>{ hoverRow=null; if(preview){ preview=null; render(); } };
+canvas.addEventListener('pointerleave',()=>{ if(!downPos) clearHover(); });
+canvas.addEventListener('pointercancel',()=>{ downPos=null; dragging=false; canvas.classList.remove('drag'); clearHover(); });
+window.addEventListener('blur',clearHover);
 
 // ---------- layout + loop ----------
 let W=1,Hh=1;
@@ -350,7 +359,9 @@ function toScreen(v){ tmp.copy(v).applyMatrix4(root.matrixWorld).project(camera)
 const place=(el,s,sc)=>{ el.style.transform=`translate(${s.x}px,${s.y}px) translate(-50%,-50%) scale(${sc})`; };
 
 function frame(now){
-  const t=(now-t0)/1000, focus=open||preview||hoverRow;
+  // geometry follows the pointer only: with a mouse, the model returns to neutral when nothing is hovered
+  // (the clicked pillar stays open in the reading panel). Touch screens have no hover, so the tapped one stays raised.
+  const t=(now-t0)/1000, hov=preview||hoverRow, focus=hov||(canHoverModel?null:open);
   const idle=!reduce&&!dragging&&now-lastInput>2500&&!focus;
   rotX+=(tRotX+(idle?Math.sin(t*0.27)*0.05:0)-rotX)*0.08;
   rotY+=(tRotY+(idle?Math.sin(t*0.35)*0.18:0)-rotY)*0.08;
